@@ -10,7 +10,6 @@ const { Option } = Select;
 
 export default function SchedulePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [_selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [form] = Form.useForm();
 
   // 샘플 일정 데이터
@@ -129,7 +128,6 @@ export default function SchedulePage() {
             <Card title="월간 캘린더">
               <Calendar 
                 dateCellRender={dateCellRender}
-                onSelect={(date) => setSelectedDate(date)}
               />
             </Card>
           </div>

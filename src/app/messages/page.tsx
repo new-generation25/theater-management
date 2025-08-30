@@ -179,7 +179,7 @@ export default function MessagesPage() {
                         </Text>
                         <br />
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                          <Tag color={getTypeColor(room.type)} size="small">
+                          <Tag color={getTypeColor(room.type)}>
                             {room.type === 'announcement' ? '공지' : 
                              room.type === 'production' ? '프로덕션' : '팀'}
                           </Tag>

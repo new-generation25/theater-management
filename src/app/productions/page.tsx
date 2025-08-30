@@ -4,7 +4,6 @@ import { Card, Button, Table, Tag, Progress, Space, Modal, Form, Input, Select, 
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
-import type { Production } from '@/types';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
