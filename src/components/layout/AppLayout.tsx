@@ -76,8 +76,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
   ];
 
   // 메뉴 클릭 핸들러
-  const handleMenuClick = (e: any) => {
-    router.push(e.key);
+  const handleMenuClick: NonNullable<MenuProps['onClick']> = (e) => {
+    router.push(e.key.toString());
   };
 
   return (

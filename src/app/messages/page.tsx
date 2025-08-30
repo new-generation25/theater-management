@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, List, Avatar, Input, Button, Badge, Tag, Space, Typography } from 'antd';
-import { SendOutlined, PlusOutlined, BellOutlined } from '@ant-design/icons';
+import { Card, List, Avatar, Input, Button, Badge, Tag, Typography } from 'antd';
+import { SendOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 

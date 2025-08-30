@@ -10,7 +10,7 @@ const { Option } = Select;
 
 export default function SchedulePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [_selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [form] = Form.useForm();
 
   // 샘플 일정 데이터
@@ -62,9 +62,9 @@ export default function SchedulePage() {
     return (
       <div style={{ minHeight: '60px' }}>
         {listData.map((item, index) => (
-          <div key={index} style={{ marginBottom: '2px' }}>
+          <div key={`${value.format('YYYYMMDD')}-${index}`} style={{ marginBottom: '2px' }}>
             <Badge 
-              status={item.type as any} 
+              status={item.type as 'success' | 'processing' | 'default' | 'error' | 'warning'} 
               text={
                 <span style={{ 
                   fontSize: '11px',
@@ -138,11 +138,12 @@ export default function SchedulePage() {
           <Card title={`📋 오늘 일정 (${new Date().toLocaleDateString('ko-KR')})`}>
             <List
               dataSource={todaySchedule}
-              renderItem={(item) => (
+              renderItem={(item, idx) => (
                 <List.Item
+                  key={`today-${idx}`}
                   actions={[
-                    <Button type="link" size="small">수정</Button>,
-                    <Button type="link" size="small" danger>삭제</Button>
+                    <Button key="edit" type="link" size="small">수정</Button>,
+                    <Button key="delete" type="link" size="small" danger>삭제</Button>
                   ]}
                 >
                   <List.Item.Meta

@@ -6,7 +6,12 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 const { Title, Text } = Typography;
 
 export default function LoginPage() {
-  const onFinish = (values: any) => {
+  interface LoginFormValues {
+    email: string;
+    password: string;
+  }
+
+  const onFinish = (values: LoginFormValues) => {
     console.log('로그인 정보:', values);
   };
 

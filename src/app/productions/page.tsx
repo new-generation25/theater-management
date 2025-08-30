@@ -47,7 +47,23 @@ export default function ProductionsPage() {
     },
   ];
 
-  const columns = [
+  interface ProductionRow {
+    key: string;
+    title: string;
+    genre: string;
+    status: '기획' | '캐스팅' | '리허설' | '공연' | '종료';
+    progress: number;
+    startDate: string;
+    endDate: string;
+    director: string;
+  }
+
+  const columns: Array<{
+    title: string;
+    dataIndex?: keyof ProductionRow;
+    key: string;
+    render?: (value: unknown, record: ProductionRow) => React.ReactNode;
+  }> = [
     {
       title: '작품명',
       dataIndex: 'title',
@@ -94,7 +110,7 @@ export default function ProductionsPage() {
     {
       title: '기간',
       key: 'period',
-      render: (record: any) => `${record.startDate} ~ ${record.endDate}`,
+      render: (_value, record) => `${record.startDate} ~ ${record.endDate}`,
     },
     {
       title: '작업',
