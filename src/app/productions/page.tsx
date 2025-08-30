@@ -67,7 +67,7 @@ export default function ProductionsPage() {
       title: '작품명',
       dataIndex: 'title',
       key: 'title',
-      render: (text: string) => <strong>{text}</strong>,
+      render: (_value, record) => <strong>{record.title}</strong>,
     },
     {
       title: '장르',
@@ -78,7 +78,7 @@ export default function ProductionsPage() {
       title: '상태',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => {
+      render: (_value, record) => {
         const colors = {
           '기획': 'blue',
           '캐스팅': 'orange',
@@ -86,18 +86,18 @@ export default function ProductionsPage() {
           '공연': 'green',
           '종료': 'gray'
         };
-        return <Tag color={colors[status as keyof typeof colors]}>{status}</Tag>;
+        return <Tag color={colors[record.status as keyof typeof colors]}>{record.status}</Tag>;
       },
     },
     {
       title: '진행률',
       dataIndex: 'progress',
       key: 'progress',
-      render: (progress: number) => (
+      render: (_value, record) => (
         <Progress 
-          percent={progress} 
+          percent={record.progress} 
           size="small"
-          status={progress === 100 ? 'success' : 'active'}
+          status={record.progress === 100 ? 'success' : 'active'}
         />
       ),
     },
@@ -114,7 +114,7 @@ export default function ProductionsPage() {
     {
       title: '작업',
       key: 'action',
-      render: () => (
+      render: (_value, _record) => (
         <Space>
           <Button type="link" icon={<EditOutlined />}>수정</Button>
           <Button type="link" danger icon={<DeleteOutlined />}>삭제</Button>
