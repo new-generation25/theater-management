@@ -1,20 +1,22 @@
 'use client';
 
-import { Layout, Menu, Avatar, Dropdown, Badge } from 'antd';
-import { 
-  DashboardOutlined, 
-  CalendarOutlined, 
-  TeamOutlined, 
+import { Layout, Menu, Avatar, Dropdown, Badge, message } from 'antd';
+import {
+  DashboardOutlined,
+  CalendarOutlined,
+  TeamOutlined,
   MessageOutlined,
   FolderOutlined,
   SettingOutlined,
   UserOutlined,
   LogoutOutlined,
-  BellOutlined
+  BellOutlined,
+  LoginOutlined
 } from '@ant-design/icons';
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import type { MenuProps } from 'antd';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const { Header, Sider, Content } = Layout;
 
@@ -26,6 +28,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { user, logout } = useAuthContext();
 
   // 메뉴 아이템 설정
   const menuItems: MenuProps['items'] = [
@@ -61,17 +64,40 @@ export default function AppLayout({ children }: AppLayoutProps) {
     },
   ];
 
+  // 로그아웃 핸들러
+  const handleLogout = async () => {
+    try {
+      await logout();
+      message.success('로그아웃 되었습니다.');
+      router.push('/login');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+      message.error('로그아웃에 실패했습니다.');
+    }
+  };
+
   // 사용자 드롭다운 메뉴
-  const userMenuItems: MenuProps['items'] = [
+  const userMenuItems: MenuProps['items'] = user ? [
     {
       key: 'profile',
       icon: <UserOutlined />,
       label: '프로필',
     },
     {
+      type: 'divider',
+    },
+    {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: '로그아웃',
+      onClick: handleLogout,
+    },
+  ] : [
+    {
+      key: 'login',
+      icon: <LoginOutlined />,
+      label: '로그인',
+      onClick: () => router.push('/login'),
     },
   ];
 
@@ -80,12 +106,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
     router.push(e.key.toString());
   };
 
+  // 사용자 이름 또는 이메일 표시
+  const displayName = user?.displayName || user?.email?.split('@')[0] || '게스트';
+  const userPhoto = user?.photoURL;
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* 사이드바 */}
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         breakpoint="lg"
         onBreakpoint={(broken) => {
@@ -96,16 +126,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
           boxShadow: '2px 0 8px rgba(0,0,0,0.1)',
         }}
       >
-        <div style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
           borderBottom: '1px solid #f0f0f0'
         }}>
-          <h2 style={{ 
-            margin: 0, 
-            color: '#722ed1', 
+          <h2 style={{
+            margin: 0,
+            color: '#722ed1',
             fontSize: collapsed ? '18px' : '20px',
             fontWeight: 'bold'
           }}>
@@ -124,9 +154,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* 메인 레이아웃 */}
       <Layout>
         {/* 헤더 */}
-        <Header style={{ 
-          padding: '0 24px', 
-          background: '#fff', 
+        <Header style={{
+          padding: '0 24px',
+          background: '#fff',
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           display: 'flex',
           justifyContent: 'space-between',
@@ -137,26 +167,32 @@ export default function AppLayout({ children }: AppLayoutProps) {
               현재 프로덕션: 햄릿
             </h3>
           </div>
-          
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* 알림 아이콘 */}
             <Badge count={3} size="small">
               <BellOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
             </Badge>
-            
+
             {/* 사용자 프로필 */}
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Avatar icon={<UserOutlined />} />
-                <span style={{ display: collapsed ? 'none' : 'inline' }}>관리자</span>
+                {userPhoto ? (
+                  <Avatar src={userPhoto} />
+                ) : (
+                  <Avatar icon={<UserOutlined />} style={{ backgroundColor: user ? '#722ed1' : '#ccc' }} />
+                )}
+                <span style={{ display: collapsed ? 'none' : 'inline' }}>
+                  {displayName}
+                </span>
               </div>
             </Dropdown>
           </div>
         </Header>
 
         {/* 메인 콘텐츠 */}
-        <Content style={{ 
-          margin: '24px', 
+        <Content style={{
+          margin: '24px',
           padding: '24px',
           background: '#fff',
           borderRadius: '8px',
