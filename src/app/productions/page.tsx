@@ -8,12 +8,24 @@ import AppLayout from '@/components/layout/AppLayout';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+// 타입 정의
+interface ProductionRow {
+  key: string;
+  title: string;
+  genre: string;
+  status: '기획' | '캐스팅' | '리허설' | '공연' | '종료';
+  progress: number;
+  startDate: string;
+  endDate: string;
+  director: string;
+}
+
 export default function ProductionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
   // 샘플 데이터
-  const sampleProductions = [
+  const sampleProductions: ProductionRow[] = [
     {
       key: '1',
       title: '햄릿',
@@ -46,82 +58,71 @@ export default function ProductionsPage() {
     },
   ];
 
-  interface ProductionRow {
-    key: string;
-    title: string;
-    genre: string;
-    status: '기획' | '캐스팅' | '리허설' | '공연' | '종료';
-    progress: number;
-    startDate: string;
-    endDate: string;
-    director: string;
-  }
-
   const columns: Array<{
     title: string;
     dataIndex?: keyof ProductionRow;
     key: string;
     render?: (value: unknown, record: ProductionRow) => React.ReactNode;
   }> = [
-    {
-      title: '작품명',
-      dataIndex: 'title',
-      key: 'title',
-      render: (_value, record) => <strong>{record.title}</strong>,
-    },
-    {
-      title: '장르',
-      dataIndex: 'genre',
-      key: 'genre',
-    },
-    {
-      title: '상태',
-      dataIndex: 'status',
-      key: 'status',
-      render: (_value, record) => {
-        const colors = {
-          '기획': 'blue',
-          '캐스팅': 'orange',
-          '리허설': 'purple',
-          '공연': 'green',
-          '종료': 'gray'
-        };
-        return <Tag color={colors[record.status as keyof typeof colors]}>{record.status}</Tag>;
+      {
+        title: '작품명',
+        dataIndex: 'title',
+        key: 'title',
+        render: (_value, record) => <strong>{record.title}</strong>,
       },
-    },
-    {
-      title: '진행률',
-      dataIndex: 'progress',
-      key: 'progress',
-      render: (_value, record) => (
-        <Progress 
-          percent={record.progress} 
-          size="small"
-          status={record.progress === 100 ? 'success' : 'active'}
-        />
-      ),
-    },
-    {
-      title: '연출',
-      dataIndex: 'director',
-      key: 'director',
-    },
-    {
-      title: '기간',
-      key: 'period',
-      render: (_value, record) => `${record.startDate} ~ ${record.endDate}`,
-    },
-    {
-      title: '작업',
-      key: 'action',
-      render: (_value, _record) => (
-        <Space>
-          <Button type="link" icon={<EditOutlined />}>수정</Button>
-          <Button type="link" danger icon={<DeleteOutlined />}>삭제</Button>
-        </Space>
-      ),
-    },
-  ];
+      {
+        title: '장르',
+        dataIndex: 'genre',
+        key: 'genre',
+      },
+      {
+        title: '상태',
+        dataIndex: 'status',
+        key: 'status',
+        render: (_value, record) => {
+          const colors = {
+            '기획': 'blue',
+            '캐스팅': 'orange',
+            '리허설': 'purple',
+            '공연': 'green',
+            '종료': 'gray'
+          };
+          return <Tag color={colors[record.status as keyof typeof colors]}>{record.status}</Tag>;
+        },
+      },
+      {
+        title: '진행률',
+        dataIndex: 'progress',
+        key: 'progress',
+        render: (_value, record) => (
+          <Progress
+            percent={record.progress}
+            size="small"
+            status={record.progress === 100 ? 'success' : 'active'}
+          />
+        ),
+      },
+      {
+        title: '연출',
+        dataIndex: 'director',
+        key: 'director',
+      },
+      {
+        title: '기간',
+        key: 'period',
+        render: (_value, record) => `${record.startDate} ~ ${record.endDate}`,
+      },
+      {
+        title: '작업',
+        key: 'action',
+        render: (_value, _record) => (
+          <Space>
+            <Button type="link" icon={<EditOutlined />}>수정</Button>
+            <Button type="link" danger icon={<DeleteOutlined />}>삭제</Button>
+          </Space>
+        ),
+      },
+    ];
 
   const handleAddProduction = () => {
     setIsModalOpen(true);
@@ -143,17 +144,17 @@ export default function ProductionsPage() {
   return (
     <AppLayout>
       <div>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '24px' 
+          marginBottom: '24px'
         }}>
           <h1 style={{ fontSize: '24px', margin: 0, color: '#722ed1' }}>
             📋 프로덕션 관리
           </h1>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             size="large"
             onClick={handleAddProduction}
@@ -163,8 +164,8 @@ export default function ProductionsPage() {
         </div>
 
         <Card>
-          <Table 
-            columns={columns} 
+          <Table
+            columns={columns}
             dataSource={sampleProductions}
             pagination={{ pageSize: 10 }}
             scroll={{ x: 800 }}
@@ -229,7 +230,7 @@ export default function ProductionsPage() {
               label="시놉시스"
               name="description"
             >
-              <Input.TextArea 
+              <Input.TextArea
                 rows={4}
                 placeholder="작품 소개 및 시놉시스를 입력하세요"
               />
